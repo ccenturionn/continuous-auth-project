@@ -23,8 +23,10 @@ def on_release(key):
     end /= 1000000
     print(f'{key} released after {end - start} milliseconds')
 
-    print(keystroke_array)
-    keystroke_array.append([key.char, start, end])
+    try:
+        keystroke_array.append([key.char, start, end])
+    except AttributeError:
+        keystroke_array.append([key, start, end])
 
     print(keystroke_array)
     if key == keyboard.Key.esc:
@@ -34,6 +36,10 @@ def on_release(key):
 # Collect events until released
 with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     listener.join()
+
+keystroke_array2 = pd.DataFrame(keystroke_array)
+keystroke_array2.columns = ["Key", "Pressed", "Released"]
+print(keystroke_array2)
 
 # ...or, in a non-blocking fashion:
 # listener = keyboard.Listener(on_press=on_press, on_release=on_release)
