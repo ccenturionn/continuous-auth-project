@@ -11,13 +11,18 @@ count = 0
 prev_key = None
 
 def on_press(key):
-    global start 
+    global start, keystroke_array, count, prev_key 
     start = time.perf_counter_ns()
     start /= 1000000
+    # try:
+    #     print(f'alphanumeric key {key.char} pressed')
+    # except AttributeError:
+    #     print(f'special key {key} pressed')
+
     try:
-        print(f'alphanumeric key {key.char} pressed')
+        keystroke_array.append([key.char, start, "Pressed", prev_key])
     except AttributeError:
-        print(f'special key {key} pressed')
+        keystroke_array.append([key, start, "Pressed", prev_key])
 
 def on_release(key):
     global end, start, keystroke_array, count, prev_key
@@ -26,9 +31,9 @@ def on_release(key):
     print(f'{key} released after {end - start} milliseconds')
 
     try:
-        keystroke_array.append([key.char, start, end, prev_key])
+        keystroke_array.append([key.char, end, "Released", prev_key])
     except AttributeError:
-        keystroke_array.append([key, start, end, prev_key])
+        keystroke_array.append([key, end, "Released", prev_key])
 
     prev_key = key
 
@@ -38,14 +43,14 @@ def on_release(key):
         return False
 
 # Collect events until released
-# with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-#     listener.join()
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
 
 time.sleep(5)
 keystroke_array2 = pd.DataFrame(keystroke_array)
-keystroke_array2.columns = ["Key", "Pressed", "Released", "PrevKey"]
+keystroke_array2.columns = ["Key", "Time", "Action", "PrevKey"]
 print(keystroke_array2)
 
-# ...or, in a non-blocking fashion:
-listener = keyboard.Listener(on_press=on_press, on_release=on_release)
-listener.start()
+# # ...or, in a non-blocking fashion:
+# listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+# listener.start()
