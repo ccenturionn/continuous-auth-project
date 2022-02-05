@@ -26,7 +26,7 @@ def on_press(key):
         return False
 
     try:
-        keystroke_array.append([key, start, "Pressed", prev_key])
+        keystroke_array.append([key.char, start, "Pressed", prev_key])
     except AttributeError:
         keystroke_array.append([key, start, "Pressed", prev_key])
 
@@ -37,7 +37,7 @@ def on_release(key):
     # print(f'{key} released after {end - start} milliseconds')
 
     try:
-        keystroke_array.append([key, end, "Released", prev_key])
+        keystroke_array.append([key.char, end, "Released", prev_key])
     except AttributeError:
         keystroke_array.append([key, end, "Released", prev_key])
 
