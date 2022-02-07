@@ -21,9 +21,9 @@ def on_press(key):
     #     print(f'special key {key} pressed')
 
     # Stop recording keystrokes if user presses Esc
-    if key == keyboard.Key.esc:
-        # Stop listener
-        return False
+    # if key == keyboard.Key.esc:
+    #     # Stop listener
+    #     return False
 
     try:
         keystroke_array.append([key.char, start, "Pressed", prev_key])
@@ -45,7 +45,7 @@ def on_release(key):
 
 def record_keystrokes():
     global keystroke_array
-    input("Please type the following passage of text and press 'Esc' once finished. Press 'Enter' to continue...")
+    input("Please type the following passage of text and press 'Enter' once finished. Press 'Enter' to continue...")
 
     print("one day, a zebra found a xylophone on the sidewalk. he quickly ran over, picked it up, and gave it to his pet mule. just then, he found another xylophone. he kept that one for himself")
 
@@ -61,6 +61,10 @@ def record_keystrokes():
 
     keystroke_array = pd.DataFrame(keystroke_array)
     keystroke_array.columns = ["Key", "Time", "Action", "PrevKey"]
+
+    # if keystroke_array['Key'].iloc[0] == keyboard.Key.enter:
+    #     keystroke_array = keystroke_array.iloc[1:, :]
+
     print(keystroke_array)
 
     with open("keystroke_data", 'wb') as file:

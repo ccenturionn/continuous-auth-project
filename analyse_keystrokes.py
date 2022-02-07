@@ -37,24 +37,44 @@ def calc_avg_dwell():
 def calc_avg_flight():
     flight_times = []
 
-    i = 0
-    while i < len(keystroke_array['Key']):
-        
-        if keystroke_array['PrevKey'].iloc[i] == None:
-            i += 1
-            continue
+    keystrokes_press = keystroke_array[keystroke_array['Action'] == "Pressed"]
+    keystrokes_release = keystroke_array[keystroke_array['Action'] == "Released"]
 
-        cur_key = keystroke_array['Key'].iloc[i]
-        prev_key = keystroke_array['PrevKey'].iloc[i]
+    print(keystrokes_press)
+    print(keystrokes_release)
 
-        flight_time = keystroke_array['Time'].iloc[i] - keystroke_array['Time'].iloc[i-1]
+    for i in range(len(keystrokes_press)):
+        cur_key = keystrokes_press['Key'].iloc[i]
+        prev_key = keystrokes_release['Key'].iloc[i]
+
+        flight_time = keystrokes_press['Time'].iloc[i] - keystrokes_release['Time'].iloc[i]
 
         flight_times.append([cur_key, prev_key, flight_time])
-
-        i+=2
 
     flight_times = pd.DataFrame(flight_times)
     flight_times.columns = ["Key", "PrevKey", "FlightTime"]
     print(flight_times)
 
-calc_avg_flight()
+    # i = 0
+    # while i < len(keystroke_array['Key']):
+        
+    #     if keystroke_array['PrevKey'].iloc[i] == None:
+    #         i += 1
+    #         continue
+
+    #     cur_key = keystroke_array['Key'].iloc[i]
+    #     prev_key = keystroke_array['PrevKey'].iloc[i]
+
+    #     flight_time = keystroke_array['Time'].iloc[i] - keystroke_array['Time'].iloc[i-1]
+
+    #     flight_times.append([cur_key, prev_key, flight_time])
+
+    #     i+=2
+
+    # flight_times = pd.DataFrame(flight_times)
+    # flight_times.columns = ["Key", "PrevKey", "FlightTime"]
+    # print(flight_times)
+
+# calc_avg_flight()
+
+print(keystroke_array.head(25))
