@@ -1,47 +1,54 @@
 import pickle
 from pynput import keyboard
 import pandas as pd
+import itertools
+
+key_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', keyboard.Key.enter, keyboard.Key.space, keyboard.Key.esc]
+
+key_set_combos = list(itertools.permutations(key_set, 2))
+for key in key_set:
+    key_set_combos.append((key, key))
 
 with open("keystroke_data", 'rb') as file:
     keystroke_array = pickle.load(file)
 
-def calc_avg_dwell():
-    avg_dwell_times = []
 
-    unique_keys = list(keystroke_array['Key'].unique())
+def calc_dwell():
 
-    for i in range(len(unique_keys)):
-        unique_keys[i] = unique_keys[i]
+    dwell_feats = []
 
-    print(unique_keys)
-
-    for key in unique_keys:
+    # Calculate dwell features for each key in the key set
+    for key in key_set:
         keystrokes_press = list(keystroke_array[(keystroke_array['Key'] == key) & (keystroke_array['Action'] == "Pressed")]['Time'])
         keystrokes_release = list(keystroke_array[(keystroke_array['Key'] == key) & (keystroke_array['Action'] == "Released")]['Time'])
 
-        total_dwell = 0
+        dwell_times = []
+
+        # Calculate dwell time for each press and release pair
         for i in range(len(keystrokes_press)):
-            total_dwell += keystrokes_release[i] - keystrokes_press[i]
+            dwell_times.append(keystrokes_release[i] - keystrokes_press[i])
 
-        try:
-            avg_dwell = total_dwell / len(keystrokes_press)
-        except:
+        # If a key has no keypresses, set it's values to 0 and go to next key
+        if len(dwell_times) <= 0:
+            dwell_feats.append([key, 0, 0, 0])
             continue
+        
+        # Calculate min, max and avg of dwell times
+        min_dwell = min(dwell_times)
+        max_dwell = max(dwell_times)
+        avg_dwell = sum(dwell_times) / len(dwell_times)
 
-        avg_dwell_times.append([key, avg_dwell])
+        dwell_feats.append([key, min_dwell, max_dwell, avg_dwell])
+    
+    return dwell_feats
 
-    avg_dwell_times = pd.DataFrame(avg_dwell_times)
-    avg_dwell_times.columns = ["Key", "Time"]
-    print(avg_dwell_times)
 
-def calc_avg_flight():
+def calc_flight():
+
     flight_times = []
 
     keystrokes_press = keystroke_array[keystroke_array['Action'] == "Pressed"]
     keystrokes_release = keystroke_array[keystroke_array['Action'] == "Released"]
-
-    print(keystrokes_press)
-    print(keystrokes_release)
 
     for i in range(len(keystrokes_press)):
         cur_key = keystrokes_press['Key'].iloc[i]
@@ -53,28 +60,56 @@ def calc_avg_flight():
 
     flight_times = pd.DataFrame(flight_times)
     flight_times.columns = ["Key", "PrevKey", "FlightTime"]
-    print(flight_times)
 
-    # i = 0
-    # while i < len(keystroke_array['Key']):
+    avg_flight_times = []
+
+    for key_combo in key_set_combos:
+
+        key_combo_flights = flight_times[(flight_times['Key'] == key_combo[0]) & (flight_times['PrevKey'] == key_combo[1])]
         
-    #     if keystroke_array['PrevKey'].iloc[i] == None:
-    #         i += 1
-    #         continue
+        if len(key_combo_flights['Key']) == 0:
+            avg_flight_times.append([key_combo[0], key_combo[1], 0])
+            continue
 
-    #     cur_key = keystroke_array['Key'].iloc[i]
-    #     prev_key = keystroke_array['PrevKey'].iloc[i]
+        avg_flight_time = sum(key_combo_flights['FlightTime']) / len(key_combo_flights['FlightTime'])
 
-    #     flight_time = keystroke_array['Time'].iloc[i] - keystroke_array['Time'].iloc[i-1]
+        avg_flight_times.append([key_combo[0], key_combo[1], avg_flight_time])
 
-    #     flight_times.append([cur_key, prev_key, flight_time])
+    return avg_flight_times
+        
+        
+def calc_features():
+    dwell_features = calc_dwell()
+    flight_features = calc_flight()
 
-    #     i+=2
+    dwell_col_names = []
+    for dwell in dwell_features:
+        dwell_col_names.append(str(dwell[0]) + "_min_dwell")
+        dwell_col_names.append(str(dwell[0]) + "_max_dwell")
+        dwell_col_names.append(str(dwell[0]) + "_avg_dwell")
 
-    # flight_times = pd.DataFrame(flight_times)
-    # flight_times.columns = ["Key", "PrevKey", "FlightTime"]
-    # print(flight_times)
+    dwell_values = []
+    for dwell in dwell_features:
+        dwell_values.append(dwell[1])
+        dwell_values.append(dwell[2])
+        dwell_values.append(dwell[3])
 
-# calc_avg_flight()
+    flight_col_names = []
+    for flight in flight_features:
+        flight_col_names.append(str(flight[0]) + "_" + str(flight[1]))
 
-print(keystroke_array.head(25))
+    flight_values = []
+    for flight in flight_features:
+        flight_values.append(flight[2])
+
+    dwell_col_names.extend(flight_col_names)
+    dwell_values.extend(flight_values)
+
+    col_names = dwell_col_names
+    values = dwell_values
+
+    features = pd.DataFrame([values], columns=col_names)
+
+    print(features)
+
+calc_features()
