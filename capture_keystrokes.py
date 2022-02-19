@@ -45,6 +45,7 @@ def on_release(key):
 
 def record_keystrokes():
     global keystroke_array
+    keystroke_array = []
     input("Please type the following passage of text and press 'Enter' once finished. Press 'Enter' to continue...")
 
     print("one day, a zebra found a xylophone on the sidewalk. he quickly ran over, picked it up, and gave it to his pet mule. just then, he found another xylophone. he kept that one for himself")
@@ -65,10 +66,10 @@ def record_keystrokes():
     # if keystroke_array['Key'].iloc[0] == keyboard.Key.enter:
     #     keystroke_array = keystroke_array.iloc[1:, :]
 
-    print(keystroke_array)
+    return keystroke_array
 
-    with open("keystroke_data", 'wb') as file:
-        pickle.dump(keystroke_array, file)
+    # with open("keystroke_data", 'wb') as file:
+    #     pickle.dump(keystroke_array, file)
 
 # record_keystrokes()
 

@@ -9,11 +9,8 @@ key_set_combos = list(itertools.permutations(key_set, 2))
 for key in key_set:
     key_set_combos.append((key, key))
 
-with open("keystroke_data", 'rb') as file:
-    keystroke_array = pickle.load(file)
 
-
-def calc_dwell():
+def calc_dwell(keystroke_array):
 
     dwell_feats = []
 
@@ -43,7 +40,7 @@ def calc_dwell():
     return dwell_feats
 
 
-def calc_flight():
+def calc_flight(keystroke_array):
 
     flight_times = []
 
@@ -78,9 +75,10 @@ def calc_flight():
     return avg_flight_times
         
         
-def calc_features():
-    dwell_features = calc_dwell()
-    flight_features = calc_flight()
+def calc_features(keystroke_array):
+
+    dwell_features = calc_dwell(keystroke_array)
+    flight_features = calc_flight(keystroke_array)
 
     dwell_col_names = []
     for dwell in dwell_features:
@@ -110,6 +108,4 @@ def calc_features():
 
     features = pd.DataFrame([values], columns=col_names)
 
-    print(features)
-
-calc_features()
+    return features
