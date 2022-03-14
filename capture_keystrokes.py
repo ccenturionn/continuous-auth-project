@@ -50,9 +50,6 @@ def record_keystrokes():
 
     print("one day, a zebra found a xylophone on the sidewalk. he quickly ran over, picked it up, and gave it to his pet mule. just then, he found another xylophone. he kept that one for himself")
 
-    # Collect events until released
-    # with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-    #     listener.join()
 
     # Collect events until released
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
@@ -63,16 +60,9 @@ def record_keystrokes():
     keystroke_array = pd.DataFrame(keystroke_array)
     keystroke_array.columns = ["Key", "Time", "Action", "PrevKey"]
 
-    # if keystroke_array['Key'].iloc[0] == keyboard.Key.enter:
-    #     keystroke_array = keystroke_array.iloc[1:, :]
-
+    listener.stop()
     return keystroke_array
 
-    # with open("keystroke_data", 'wb') as file:
-    #     pickle.dump(keystroke_array, file)
 
-# record_keystrokes()
 
-# # ...or, in a non-blocking fashion:
-# listener = keyboard.Listener(on_press=on_press, on_release=on_release)
-# listener.start()
+
