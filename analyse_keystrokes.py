@@ -133,3 +133,33 @@ def calc_features(keystroke_array):
     features = pd.DataFrame([values], columns=col_names)
 
     return features
+
+def get_empty_df(keystroke_array):
+    """
+    Generates empy dataframe with keystroke feature headings
+    """
+
+    # Calculate dwell and flight features
+    dwell_features = calc_dwell(keystroke_array)
+    flight_features = calc_flight(keystroke_array)
+
+    # Define list of column names for dwell time features
+    dwell_col_names = []
+    for dwell in dwell_features:
+        dwell_col_names.append(str(dwell[0]) + "_min_dwell")
+        dwell_col_names.append(str(dwell[0]) + "_max_dwell")
+        dwell_col_names.append(str(dwell[0]) + "_avg_dwell")
+
+    # Define list of column names for flight time features
+    flight_col_names = []
+    for flight in flight_features:
+        flight_col_names.append(str(flight[0]) + "_" + str(flight[1]))
+
+    # Append flight column names and values to dwell column names and value
+    dwell_col_names.extend(flight_col_names)
+
+    temp_df = pd.DataFrame(columns=dwell_col_names)
+
+    with open("user_data\\keystroke_features_store", 'wb') as file:
+        pickle.dump(temp_df, file)
+    file.close()
