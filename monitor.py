@@ -9,7 +9,6 @@ count = 0
 prev_key = None
 
 
-
 def monitor_on_press(key):
     global start, keystroke_array, count, prev_key 
     start = time.perf_counter_ns()

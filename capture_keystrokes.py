@@ -12,18 +12,13 @@ count = 0
 prev_key = None
 
 def on_press(key):
+    """
+    Called when a key is pressed. Get the time that the key is pressed and append to keystroke array.
+    """
+
     global start, keystroke_array, count, prev_key 
     start = time.perf_counter_ns()
     start /= 1000000
-    # try:
-    #     print(f'alphanumeric key {key.char} pressed')
-    # except AttributeError:
-    #     print(f'special key {key} pressed')
-
-    # Stop recording keystrokes if user presses Esc
-    # if key == keyboard.Key.esc:
-    #     # Stop listener
-    #     return False
 
     try:
         keystroke_array.append([key.char, start, "Pressed", prev_key])
@@ -31,10 +26,13 @@ def on_press(key):
         keystroke_array.append([key, start, "Pressed", prev_key])
 
 def on_release(key):
+    """
+    Called when a key is released. Get the time that the key is released and append to keystroke array.
+    """
+
     global end, start, keystroke_array, count, prev_key
     end = time.perf_counter_ns()
     end /= 1000000
-    # print(f'{key} released after {end - start} milliseconds')
 
     try:
         keystroke_array.append([key.char, end, "Released", prev_key])
@@ -44,6 +42,10 @@ def on_release(key):
     prev_key = key
 
 def record_keystrokes():
+    """
+    Record keystroke data for a user
+    """
+
     global keystroke_array
     keystroke_array = []
     input("Please type the following passage of text and press 'Enter' once finished. Press 'Enter' to continue...")

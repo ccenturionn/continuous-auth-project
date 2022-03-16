@@ -3,14 +3,19 @@ from pynput import keyboard
 import pandas as pd
 import itertools
 
+# Define list of keys that analysed
 key_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', keyboard.Key.enter, keyboard.Key.space, keyboard.Key.esc]
 
+# Define a list of all combinations of keys (including same-key combination)
 key_set_combos = list(itertools.permutations(key_set, 2))
 for key in key_set:
     key_set_combos.append((key, key))
 
 
 def calc_dwell(keystroke_array):
+    """
+    Calculates the dwell time attributes for the keystroke data
+    """
 
     dwell_feats = []
 
@@ -41,71 +46,90 @@ def calc_dwell(keystroke_array):
 
 
 def calc_flight(keystroke_array):
+    """
+    Calculates the flight time attributes for the keystroke data
+    """
 
     flight_times = []
 
+    # Separate keystroke presses and releases
     keystrokes_press = keystroke_array[keystroke_array['Action'] == "Pressed"]
     keystrokes_release = keystroke_array[keystroke_array['Action'] == "Released"]
 
+    # Calculate the flight time between keystrokes and append to list
     for i in range(len(keystrokes_press)):
         cur_key = keystrokes_press['Key'].iloc[i]
         prev_key = keystrokes_release['Key'].iloc[i]
 
+        # Calculate flight time
         flight_time = keystrokes_press['Time'].iloc[i] - keystrokes_release['Time'].iloc[i]
 
         flight_times.append([cur_key, prev_key, flight_time])
 
+    # Convert list to dataframe
     flight_times = pd.DataFrame(flight_times)
     flight_times.columns = ["Key", "PrevKey", "FlightTime"]
 
     avg_flight_times = []
 
+    # Calculate average flight time for each key combination and append to list
     for key_combo in key_set_combos:
 
         key_combo_flights = flight_times[(flight_times['Key'] == key_combo[0]) & (flight_times['PrevKey'] == key_combo[1])]
         
+        # If there is no flight attribute for a key set average time to 0
         if len(key_combo_flights['Key']) == 0:
             avg_flight_times.append([key_combo[0], key_combo[1], 0])
             continue
 
+        # Calculate average flight time and append to list
         avg_flight_time = sum(key_combo_flights['FlightTime']) / len(key_combo_flights['FlightTime'])
-
         avg_flight_times.append([key_combo[0], key_combo[1], avg_flight_time])
 
     return avg_flight_times
         
         
 def calc_features(keystroke_array):
+    """
+    Calculates features from raw keystroke data
+    """
 
+    # Calculate dwell and flight features
     dwell_features = calc_dwell(keystroke_array)
     flight_features = calc_flight(keystroke_array)
 
+    # Define list of column names for dwell time features
     dwell_col_names = []
     for dwell in dwell_features:
         dwell_col_names.append(str(dwell[0]) + "_min_dwell")
         dwell_col_names.append(str(dwell[0]) + "_max_dwell")
         dwell_col_names.append(str(dwell[0]) + "_avg_dwell")
 
+    # Define list of values for dwell time features
     dwell_values = []
     for dwell in dwell_features:
         dwell_values.append(dwell[1])
         dwell_values.append(dwell[2])
         dwell_values.append(dwell[3])
 
+    # Define list of column names for flight time features
     flight_col_names = []
     for flight in flight_features:
         flight_col_names.append(str(flight[0]) + "_" + str(flight[1]))
 
+    # Define line of values for flight time features
     flight_values = []
     for flight in flight_features:
         flight_values.append(flight[2])
 
+    # Append flight column names and values to dwell column names and value
     dwell_col_names.extend(flight_col_names)
     dwell_values.extend(flight_values)
 
     col_names = dwell_col_names
     values = dwell_values
 
+    # Create dataframe using values list and column names list
     features = pd.DataFrame([values], columns=col_names)
 
     return features
