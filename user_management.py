@@ -2,6 +2,7 @@ import capture_keystrokes
 import pickle
 import pandas as pd
 import analyse_keystrokes
+import classify
 import os
 
 def add_user(username="none_provided", reps=0):
@@ -20,8 +21,15 @@ def add_user(username="none_provided", reps=0):
         user_num = pickle.load(file)
     file.close()
 
+    # Get value for user number
+    for i in range(50):
+        print(i)
+        if i not in user_num:
+            num = i
+            break
+
     # Set the user number
-    user_num[username] = len(user_num)
+    user_num[num] = username
 
     frames = []
 
@@ -33,7 +41,7 @@ def add_user(username="none_provided", reps=0):
 
     keystroke_features = pd.concat(frames)
 
-    keystroke_features['user'] = int(user_num[username])
+    keystroke_features['user'] = num
 
     with open("user_data\\keystroke_features_store", 'rb') as file:
         master_keystroke_features = pickle.load(file)
@@ -51,7 +59,10 @@ def add_user(username="none_provided", reps=0):
         pickle.dump(user_num, file)
     file.close()
 
-    print(f"Successfully added {username} (user no. {user_num[username]}) to the keystroke feature datastore.")
+    if len(user_num) > 1:
+        classify.train_classifier()
+
+    print(f"Successfully added {user_num[num]} (user no. {num}) to the keystroke feature datastore.")
 
 
 def remove_user(username="none_provided"):
@@ -66,20 +77,22 @@ def remove_user(username="none_provided"):
         user_num = pickle.load(file)
     file.close()
 
+    num = list(user_num.keys())[list(user_num.values()).index(username)]
+
     with open("user_data\\keystroke_features_store", 'rb') as file:
         master_keystroke_features = pickle.load(file)
     file.close()
 
-    master_keystroke_features = master_keystroke_features[master_keystroke_features['user'] != user_num[username]]
+    master_keystroke_features = master_keystroke_features[master_keystroke_features['user'] != num]
 
     # Store the features dataframe to file
     with open("user_data\\keystroke_features_store", 'wb') as file:
         pickle.dump(master_keystroke_features, file)
     file.close()
 
-    print(f"Successfully removed {username} (user no. {user_num[username]}) from the keystroke feature datastore.")
+    print(f"Successfully removed {user_num[num]} (user no. {num}) from the keystroke feature datastore.")
 
-    user_num.pop(username, None)
+    user_num.pop(num, None)
 
     with open("user_data\\user_num_store", 'wb') as file:
         pickle.dump(user_num, file)
@@ -96,7 +109,7 @@ def list_users():
     file.close()
 
     for key, value in user_num.items():
-        print(f"Username: {key}\t\tUser No.: {value}")
+        print(f"Username: {value}\t\tUser No.: {key}")
 
 def print_keystroke_datastore():
     """
