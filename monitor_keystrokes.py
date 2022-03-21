@@ -44,11 +44,13 @@ def monitor_on_release(key):
 
     print(key)
 
-    if count % 20 == 0:
-        keystroke_array = pd.DataFrame(keystroke_array)
-        keystroke_array.columns = ["Key", "Time", "Action", "PrevKey"]
+    if count > 20:
+        count = 0
+        keystroke_df = pd.DataFrame(keystroke_array)
+        keystroke_array = []
+        keystroke_df.columns = ["Key", "Time", "Action", "PrevKey"]
 
-        pred, pred_proba = classify.predict_class(ml_classifier, analyse_keystrokes.calc_features(keystroke_array))
+        pred, pred_proba = classify.predict_class(ml_classifier, analyse_keystrokes.calc_features(keystroke_df))
 
         print(f"Prediction: {pred}\t\tProbability: {pred_proba}")
 
