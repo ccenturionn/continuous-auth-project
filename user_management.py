@@ -4,10 +4,16 @@ import pandas as pd
 import analyse_keystrokes
 import os
 
-def add_user(username, reps):
+def add_user(username="none_provided", reps=0):
     """
     Adds a user to the system
     """
+
+    if username == "none_provided":
+        username = input("Enter a username to add: ")
+
+    if reps == 0:
+        reps = int(input("Enter the number of training repetitions the user should complete: "))
 
     # Load user_num dict from file
     with open("user_data\\user_num_store", 'rb') as file:
@@ -48,10 +54,13 @@ def add_user(username, reps):
     print(f"Successfully added {username} (user no. {user_num[username]}) to the keystroke feature datastore.")
 
 
-def remove_user(username):
+def remove_user(username="none_provided"):
     """
     Removes a user from the system
     """
+
+    if username == "none_provided":
+        username = input("Enter a username to remove: ")
 
     with open("user_data\\user_num_store", 'rb') as file:
         user_num = pickle.load(file)
@@ -68,13 +77,13 @@ def remove_user(username):
         pickle.dump(master_keystroke_features, file)
     file.close()
 
+    print(f"Successfully removed {username} (user no. {user_num[username]}) from the keystroke feature datastore.")
+
     user_num.pop(username, None)
 
     with open("user_data\\user_num_store", 'wb') as file:
         pickle.dump(user_num, file)
     file.close()
-
-    print(f"Successfully removed {username} (user no. {user_num[username]}) from the keystroke feature datastore.")
 
 
 def list_users():
@@ -99,5 +108,16 @@ def print_keystroke_datastore():
     file.close()
 
     print(keystroke_features)
+
+def manage_users():
+    
+    dispatcher = {'1': add_user, '2': remove_user, '3': list_users, '4': print_keystroke_datastore}
+    
+    while True:
+
+        print("Choose an option:\n1. Add a user\n2. Remove a user\n3. List users\n4. Output the keystroke datastore")
+        response = input("Choice: ")
+
+        dispatcher[response]()
 
 

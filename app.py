@@ -8,6 +8,6 @@ import capture_keystrokes
 import monitor_keystrokes
 import user_management
 
-user_management.print_keystroke_datastore()
+user_management.manage_users()
 
 # monitor_keystrokes.mon_keystrokes()
