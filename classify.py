@@ -1,78 +1,57 @@
 import pickle
 
-import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.utils import shuffle
-
-import analyse_keystrokes
-import capture_keystrokes
-
-with open("lauren_keystroke_features", 'rb') as file:
-    lauren_keystroke_features = pickle.load(file)
-file.close()
-
-with open("oliver_keystroke_features", 'rb') as file:
-    oliver_keystroke_features = pickle.load(file)
-file.close()
-
-with open("test_keystroke_features", "rb") as file:
-    test_keystroke_features = pickle.load(file)
-file.close()
-
-lauren_keystroke_features['user'] = 0
-
-oliver_keystroke_features['user'] = 1
-
-test_keystroke_features['user'] = 2
-
-keystroke_features = pd.concat([oliver_keystroke_features, lauren_keystroke_features, test_keystroke_features])
-
-keystroke_features = keystroke_features.reset_index(drop=True)
-
-features_values = keystroke_features.loc[:, keystroke_features.columns != 'user']
-
-x = features_values
-y = keystroke_features['user']
-index = keystroke_features.index
 
 
-# x_train, x_test, y_train, y_test, index_train, index_test = train_test_split(x, y, index, train_size=0.6, shuffle=True)
-x_train, x_test, y_train, y_test, index_train, index_test = train_test_split(x, y, index, train_size=0.9, shuffle=True)
+def train_classifier():
+    """
+    Trains the machine learning classifier using keystroke_features_store and stores the trained classifier as trained_classifier
+    """
 
-y_train = y_train.astype('int')
-y_test = y_test.astype('int')
+    # Load the keystroke features
+    with open("user_data\\keystroke_features_store", 'rb') as file:
+        keystroke_features = pickle.load(file)
+    file.close()
 
-print("Training ML Classifier...")
+    # Separate the values from the class label
+    features = keystroke_features.loc[:, keystroke_features.columns != 'user']
 
-logistic_reg = LogisticRegression(random_state=0, max_iter=4000)
-logistic_reg.fit(x_train, y_train)
+    x_train = features
+    y_train = keystroke_features['user']
+    index_train = keystroke_features.index
 
+    y_train = y_train.astype('int')
 
-keystroke_array = capture_keystrokes.record_keystrokes()
+    print("Training ML Classifier...")
 
-with open("test_keystroke_data", 'wb') as file:
-    pickle.dump(keystroke_array, file)
+    # Init the ML classifier and fit the training data
+    logistic_reg = LogisticRegression(random_state=0, max_iter=4000)
+    logistic_reg.fit(x_train, y_train)
 
-file.close()
-
-
-with open("test_keystroke_data", 'rb') as file:
-            keystroke_array = pickle.load(file)
-
-file.close()
-
-test_keystroke_features = analyse_keystrokes.calc_features(keystroke_array)
-
+    # Store the trained ML classifier
+    with open("user_data\\trained_classifier", 'wb') as file:
+        pickle.dump(logistic_reg, file)
+    file.close()
 
 
+def predict_class(ml_classifier, keystroke_features):
+    """
+    Predicts the class of a set of keystroke features and returns the predicted class and probabilities
+    """
 
-lr_pred = logistic_reg.predict(test_keystroke_features.head(1))
+    # Predict the class and probability of the keystroke features
+    pred = ml_classifier.predict(keystroke_features)
+    pred_proba = ml_classifier.predict_proba(keystroke_features)
 
-print(lr_pred)
+    print(ml_classifier.classes_)
 
-# if lr_pred[0] == 1:
-#     print("Current user: Oliver")
-# else:
-#     print("Current user: Lauren")
+    return(pred, pred_proba)
+
+
+# with open("user_data\\trained_classifier", 'rb') as file:
+#     ml_classifier = pickle.load(file)
+# file.close()
+
+# pred, pred_proba = predict_class(ml_classifier, analyse_keystrokes.calc_features(capture_keystrokes.record_keystrokes()))
+
+# print(f"Prediction: {pred}\t\tProbability: {pred_proba}")
