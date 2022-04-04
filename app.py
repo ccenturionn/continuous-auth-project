@@ -8,6 +8,6 @@ import capture_keystrokes
 import monitor_keystrokes
 import user_management
 
-# user_management.manage_users()
-
-monitor_keystrokes.mon_keystrokes()
+if __name__ == "__main__":
+    monitor_keystrokes.mon_keystrokes()
+    # user_management.manage_users()

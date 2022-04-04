@@ -4,17 +4,35 @@ import analyse_keystrokes
 import pickle
 import classify
 import pandas as pd
+import multiprocessing
+from win10toast import ToastNotifier
 
 start = 0
 end = 0
 keystroke_array = []
 count = 0
 prev_key = None
-
+toaster = ToastNotifier()
 
 with open("user_data\\trained_classifier", 'rb') as file:
     ml_classifier = pickle.load(file)
 file.close()
+
+with open("user_data\\user_num_store", 'rb') as file:
+    user_num = pickle.load(file)
+file.close()
+
+def run_ml(keystroke_array):
+    global ml_classifier, user_num
+    print("ML Process Started")
+    keystroke_df = pd.DataFrame(keystroke_array)
+    keystroke_array = []
+    keystroke_df.columns = ["Key", "Time", "Action", "PrevKey"]
+
+    pred, pred_proba = classify.predict_class(ml_classifier, analyse_keystrokes.calc_features(keystroke_df))
+
+    print(f"Prediction: {pred}\t\tProbability: {pred_proba}")
+    toaster.show_toast("User Detected", f"{user_num[pred[0]]}")
 
 
 def monitor_on_press(key):
@@ -30,7 +48,7 @@ def monitor_on_press(key):
     count += 1
 
 def monitor_on_release(key):
-    global end, start, keystroke_array, count, prev_key, ml_classifier
+    global end, start, keystroke_array, count, prev_key
     end = time.perf_counter_ns()
     end /= 1000000
     # print(f'{key} released after {end - start} milliseconds')
@@ -44,16 +62,10 @@ def monitor_on_release(key):
 
     print(key)
 
-    if count > 20:
+    if count > 40:
         count = 0
-        keystroke_df = pd.DataFrame(keystroke_array)
-        keystroke_array = []
-        keystroke_df.columns = ["Key", "Time", "Action", "PrevKey"]
-
-        pred, pred_proba = classify.predict_class(ml_classifier, analyse_keystrokes.calc_features(keystroke_df))
-
-        print(f"Prediction: {pred}\t\tProbability: {pred_proba}")
-
+        ml_process = multiprocessing.Process(target=run_ml, args=[keystroke_array])
+        ml_process.start()
 
 def mon_keystrokes():
 
