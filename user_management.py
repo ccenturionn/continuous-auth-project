@@ -4,6 +4,7 @@ import pandas as pd
 import analyse_keystrokes
 import classify
 from os.path import exists
+from os import system
 
 if exists("user_data\\user_num_store") == False:
     user_num = {}
@@ -14,6 +15,9 @@ if exists("user_data\\user_num_store") == False:
 if exists("user_data\\keystroke_features_store") == False:
     print("Please type random letters to initialise keystroke dataframe.")
     analyse_keystrokes.create_empty_df(capture_keystrokes.record_keystrokes())
+
+def clear_console():
+    system('cls')
 
 def add_user(username="none_provided", reps=0):
     """
@@ -73,6 +77,8 @@ def add_user(username="none_provided", reps=0):
 
     print(f"Successfully added {user_num[num]} (user no. {num}) to the keystroke feature datastore.")
 
+    input("Press enter to continue...")
+
 
 def remove_user(username="none_provided"):
     """
@@ -107,6 +113,8 @@ def remove_user(username="none_provided"):
         pickle.dump(user_num, file)
     file.close()
 
+    input("Press enter to continue...")
+
 
 def list_users():
     """
@@ -119,6 +127,8 @@ def list_users():
 
     for key, value in user_num.items():
         print(f"Username: {value}\t\tUser No.: {key}")
+        
+    input("Press enter to continue...")
 
 def print_keystroke_datastore():
     """
@@ -130,15 +140,19 @@ def print_keystroke_datastore():
     file.close()
 
     print(keystroke_features)
+    input("Press enter to continue...")
 
 def manage_users():
     
     dispatcher = {'1': add_user, '2': remove_user, '3': list_users, '4': print_keystroke_datastore}
     
     while True:
-
-        print("Choose an option:\n1. Add a user\n2. Remove a user\n3. List users\n4. Output the keystroke datastore")
+        clear_console()
+        print("Choose an option:\n1. Add a user\n2. Remove a user\n3. List users\n4. Output the keystroke datastore\n5. Return to main menu")
         response = input("Choice: ")
+
+        if response == '5':
+            break
 
         dispatcher[response]()
 
