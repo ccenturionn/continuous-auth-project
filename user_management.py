@@ -3,7 +3,17 @@ import pickle
 import pandas as pd
 import analyse_keystrokes
 import classify
-import os
+from os.path import exists
+
+if exists("user_data\\user_num_store") == False:
+    user_num = {}
+    with open("user_data\\user_num_store", 'wb') as file:
+        pickle.dump(user_num, file)
+    file.close()
+
+if exists("user_data\\keystroke_features_store") == False:
+    print("Please type random letters to initialise keystroke dataframe.")
+    analyse_keystrokes.create_empty_df(capture_keystrokes.record_keystrokes())
 
 def add_user(username="none_provided", reps=0):
     """
@@ -23,7 +33,6 @@ def add_user(username="none_provided", reps=0):
 
     # Get value for user number
     for i in range(50):
-        print(i)
         if i not in user_num:
             num = i
             break

@@ -27,8 +27,14 @@ def calc_dwell(keystroke_array):
         dwell_times = []
 
         # Calculate dwell time for each press and release pair
-        for i in range(len(keystrokes_press)):
-            dwell_times.append(keystrokes_release[i] - keystrokes_press[i])
+        
+        if len(keystrokes_press) <= len(keystrokes_release):
+            for i in range(len(keystrokes_press)):
+                dwell_times.append(keystrokes_release[i] - keystrokes_press[i])
+        else:
+            for i in range(len(keystrokes_release)):
+                dwell_times.append(keystrokes_release[i] - keystrokes_press[i])
+
 
         # If a key has no keypresses, set it's values to 0 and go to next key
         if len(dwell_times) <= 0:
@@ -134,9 +140,9 @@ def calc_features(keystroke_array):
 
     return features
 
-def get_empty_df(keystroke_array):
+def create_empty_df(keystroke_array):
     """
-    Generates empy dataframe with keystroke feature headings
+    Generates empty dataframe with keystroke feature headings
     """
 
     # Calculate dwell and flight features

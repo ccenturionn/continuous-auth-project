@@ -6,6 +6,7 @@ import classify
 import pandas as pd
 import multiprocessing
 from win10toast import ToastNotifier
+from os.path import exists
 
 start = 0
 end = 0
@@ -13,6 +14,12 @@ keystroke_array = []
 count = 0
 prev_key = None
 toaster = ToastNotifier()
+
+if not exists("user_data\\trained_classifier"):
+    user_num = {}
+    with open("user_data\\trained_classifier", 'wb') as file:
+        pickle.dump(user_num, file)
+    file.close()
 
 with open("user_data\\trained_classifier", 'rb') as file:
     ml_classifier = pickle.load(file)
