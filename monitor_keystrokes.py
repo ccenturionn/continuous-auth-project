@@ -30,10 +30,8 @@ with open("user_data\\user_num_store", 'rb') as file:
 file.close()
 
 def run_ml(keystroke_array):
-    global ml_classifier, user_num
     print("ML Process Started")
     keystroke_df = pd.DataFrame(keystroke_array)
-    keystroke_array = []
     keystroke_df.columns = ["Key", "Time", "Action", "PrevKey"]
 
     pred, pred_proba = classify.predict_class(ml_classifier, analyse_keystrokes.calc_features(keystroke_df))
@@ -73,6 +71,8 @@ def monitor_on_release(key):
         count = 0
         ml_process = multiprocessing.Process(target=run_ml, args=[keystroke_array])
         ml_process.start()
+        keystroke_array = []
+
 
 def mon_keystrokes():
 
