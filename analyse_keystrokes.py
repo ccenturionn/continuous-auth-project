@@ -63,14 +63,24 @@ def calc_flight(keystroke_array):
     keystrokes_release = keystroke_array[keystroke_array['Action'] == "Released"]
 
     # Calculate the flight time between keystrokes and append to list
-    for i in range(len(keystrokes_press)):
-        cur_key = keystrokes_press['Key'].iloc[i]
-        prev_key = keystrokes_release['Key'].iloc[i]
+    if len(keystrokes_press) <= len(keystrokes_release):
+        for i in range(len(keystrokes_press)):
+            cur_key = keystrokes_press['Key'].iloc[i]
+            prev_key = keystrokes_release['Key'].iloc[i]
 
-        # Calculate flight time
-        flight_time = keystrokes_press['Time'].iloc[i] - keystrokes_release['Time'].iloc[i]
+            # Calculate flight time
+            flight_time = keystrokes_press['Time'].iloc[i] - keystrokes_release['Time'].iloc[i]
 
-        flight_times.append([cur_key, prev_key, flight_time])
+            flight_times.append([cur_key, prev_key, flight_time])
+    else:
+        for i in range(len(keystrokes_release)):
+            cur_key = keystrokes_press['Key'].iloc[i]
+            prev_key = keystrokes_release['Key'].iloc[i]
+
+            # Calculate flight time
+            flight_time = keystrokes_press['Time'].iloc[i] - keystrokes_release['Time'].iloc[i]
+
+            flight_times.append([cur_key, prev_key, flight_time])
 
     # Convert list to dataframe
     flight_times = pd.DataFrame(flight_times)
