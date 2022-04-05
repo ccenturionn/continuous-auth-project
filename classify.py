@@ -46,12 +46,3 @@ def predict_class(ml_classifier, keystroke_features):
     print(ml_classifier.classes_)
 
     return(pred, pred_proba)
-
-
-# with open("user_data\\trained_classifier", 'rb') as file:
-#     ml_classifier = pickle.load(file)
-# file.close()
-
-# pred, pred_proba = predict_class(ml_classifier, analyse_keystrokes.calc_features(capture_keystrokes.record_keystrokes()))
-
-# print(f"Prediction: {pred}\t\tProbability: {pred_proba}")
