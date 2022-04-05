@@ -1,12 +1,14 @@
-from pynput import keyboard
-import time
-import analyse_keystrokes
-import pickle
-import classify
-import pandas as pd
 import multiprocessing
-from win10toast import ToastNotifier
+import pickle
+import time
 from os.path import exists
+
+import pandas as pd
+from pynput import keyboard
+from win10toast import ToastNotifier
+
+import analyse_keystrokes
+import classify
 
 start = 0
 end = 0

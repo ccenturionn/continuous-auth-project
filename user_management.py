@@ -1,10 +1,12 @@
-import capture_keystrokes
 import pickle
-import pandas as pd
-import analyse_keystrokes
-import classify
-from os.path import exists
 from os import system
+from os.path import exists
+
+import pandas as pd
+
+import analyse_keystrokes
+import capture_keystrokes
+import classify
 
 if exists("user_data\\user_num_store") == False:
     user_num = {}

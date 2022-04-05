@@ -1,7 +1,8 @@
-import pickle
-from pynput import keyboard
-import pandas as pd
 import itertools
+import pickle
+
+import pandas as pd
+from pynput import keyboard
 
 # Define list of keys that analysed
 key_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', keyboard.Key.enter, keyboard.Key.space, keyboard.Key.esc]

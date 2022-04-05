@@ -1,9 +1,8 @@
-from asyncio.windows_events import NULL
-from pynput import keyboard
-import numpy as np
-import pandas as pd
 import time
-import pickle
+from asyncio.windows_events import NULL
+
+import pandas as pd
+from pynput import keyboard
 
 start = 0
 end = 0

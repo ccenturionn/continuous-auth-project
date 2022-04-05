@@ -1,15 +1,9 @@
-from mimetypes import init
-import pickle
-
-import pandas as pd
-
-import analyse_keystrokes
-import user_management
-import capture_keystrokes
-import monitor_keystrokes
-import demo
-
 from os import system
+
+import demo
+import monitor_keystrokes
+import user_management
+
 
 def clear_console():
     system('cls')

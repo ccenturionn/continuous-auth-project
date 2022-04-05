@@ -1,16 +1,17 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import pickle
 
-import capture_keystrokes
+import matplotlib.pyplot as plt
+
 import analyse_keystrokes
+import capture_keystrokes
 import classify
 
-with open("user_data\\trained_classifier", 'rb') as file:
-    ml_classifier = pickle.load(file)
-file.close()
 
 def demo_project():
+    with open("user_data\\trained_classifier", 'rb') as file:
+        ml_classifier = pickle.load(file)
+    file.close()
+
     keystroke_array = capture_keystrokes.record_keystrokes()
 
     print(keystroke_array)
@@ -23,7 +24,7 @@ def demo_project():
 
         pred, pred_proba = classify.predict_class(ml_classifier, keystroke_features)
 
-        pred_proba_list.append(pred_proba[0][0])
+        pred_proba_list.append(pred_proba[0][1])
 
     print(pred_proba_list)
 
@@ -33,13 +34,5 @@ def demo_project():
     plt.xlabel("Number of Keystrokes")
     plt.ylabel("Prediction Probability")
     plt.show()
-    """
-    Record keystrokes
-    For a range of single keystroke to all keystrokes
-        Calculate features
-        Predict against classifier
-        store prediction confidence
-    output to a plot
-    """
 
-demo_project()
+    input("Press enter to continue...")
