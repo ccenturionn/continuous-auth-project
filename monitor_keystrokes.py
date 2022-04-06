@@ -44,7 +44,7 @@ class Confidence:
         self.user_confidence = {}
 
         for i in range(len(user_num)):
-            self.user_confidence[i] = [0.5, 0.5, 0.5, 0.5, 0.5]
+            self.user_confidence[i] = [0, 0, 0, 0, 0]
 
 
 def update_confidence(pred_proba):
