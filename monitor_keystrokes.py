@@ -28,6 +28,7 @@ with open("user_data\\user_num_store", 'rb') as file:
     user_num = pickle.load(file)
 file.close()
 
+# Initialise global variables
 start = 0
 end = 0
 keystroke_array = []
@@ -46,33 +47,42 @@ class Confidence:
 
 
 def update_confidence(pred_proba):
+    """
+    Calculate user confidence levels based on classifier prediction probability
+    """
+
+    # Load the user confidence data
     with open("user_data\\confidence_data", 'rb') as file:
         cd = pickle.load(file)
     file.close()
 
     pred_proba_len = len(pred_proba[0])
 
+    # Remove the first value in each user confidence list
     for conf in cd.user_confidence:
         cd.user_confidence[conf].pop(0)
 
+    # Append prediction probability for each user
     for i in range(pred_proba_len):
         cd.user_confidence[i].append(pred_proba[0][i])
 
+    # Calculate average confidence for each user
     confidence_avg = []
-
-    print(cd.user_confidence)
     for i in range(pred_proba_len):
         confidence_avg.append(np.mean(cd.user_confidence[i]))
         print(np.mean(cd.user_confidence[i]))
 
+    # Get most confident user
     current_user = np.argmax(confidence_avg)
 
+    # If the most confident user is not already the current user, replace them and send notification
     if current_user != cd.current_user:
         cd.current_user = current_user
 
         # Windows notification with detected user
         toaster.show_toast("User Detected", f"{user_num[current_user]}")
 
+    # Store the user confidence data
     with open("user_data\\confidence_data", 'wb') as file:
         pickle.dump(cd, file)
     file.close()
