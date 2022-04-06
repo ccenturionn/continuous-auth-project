@@ -24,7 +24,7 @@ def demo_project():
 
         pred, pred_proba = classify.predict_class(ml_classifier, keystroke_features)
 
-        pred_proba_list.append(pred_proba[0][1])
+        pred_proba_list.append(pred_proba[0][0])
 
     print(pred_proba_list)
 

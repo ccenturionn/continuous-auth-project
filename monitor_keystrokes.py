@@ -65,12 +65,13 @@ def update_confidence(pred_proba):
     # Append prediction probability for each user
     for i in range(pred_proba_len):
         cd.user_confidence[i].append(pred_proba[0][i])
+        # print(cd.user_confidence[i])
 
     # Calculate average confidence for each user
     confidence_avg = []
     for i in range(pred_proba_len):
         confidence_avg.append(np.mean(cd.user_confidence[i]))
-        print(np.mean(cd.user_confidence[i]))
+        # print(np.mean(cd.user_confidence[i]))
 
     # Get most confident user
     current_user = np.argmax(confidence_avg)
@@ -92,7 +93,7 @@ def run_ml(keystroke_array):
     """
     Get keystroke features from keystroke array and predict class against ML classifier
     """
-    print("ML Process Started")
+    # print("ML Process Started")
 
     # Convert array to dataframe
     keystroke_df = pd.DataFrame(keystroke_array)
@@ -104,7 +105,7 @@ def run_ml(keystroke_array):
     update_confidence(pred_proba)
 
     # Output the predicted class
-    print(f"Prediction: {pred}\t\tProbability: {pred_proba}")
+    # print(f"Prediction: {pred}\t\tProbability: {pred_proba}")
 
 
 
@@ -172,4 +173,6 @@ def mon_keystrokes():
     listener.start()
 
     input()
+
+    listener.stop()
    

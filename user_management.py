@@ -171,7 +171,10 @@ def manage_users():
 
         if response == '5':
             break
-
-        dispatcher[response]()
+        
+        try:
+            dispatcher[response]()
+        except:
+            pass
 
 
