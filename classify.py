@@ -43,6 +43,6 @@ def predict_class(ml_classifier, keystroke_features):
     pred = ml_classifier.predict(keystroke_features)
     pred_proba = ml_classifier.predict_proba(keystroke_features)
 
-    print(ml_classifier.classes_)
+    # print(ml_classifier.classes_)
 
     return(pred, pred_proba)
