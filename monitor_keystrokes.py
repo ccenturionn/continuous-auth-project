@@ -10,6 +10,7 @@ from win10toast import ToastNotifier
 
 import analyse_keystrokes
 import classify
+import user_management
 
 # If the trained_classifier file doesn't exist, create placeholder file
 if not exists("user_data\\trained_classifier"):
@@ -57,6 +58,9 @@ def update_confidence(pred_proba):
     file.close()
 
     pred_proba_len = len(pred_proba[0])
+    # print(cd.user_confidence)
+    # print(user_num)
+    # print(pred_proba[0])
 
     # Remove the first value in each user confidence list
     for conf in cd.user_confidence:
@@ -64,14 +68,18 @@ def update_confidence(pred_proba):
 
     # Append prediction probability for each user
     for i in range(pred_proba_len):
+        # print(i)
         cd.user_confidence[i].append(pred_proba[0][i])
         # print(cd.user_confidence[i])
 
+    user_management.clear_console()
+    
     # Calculate average confidence for each user
     confidence_avg = []
     for i in range(pred_proba_len):
-        confidence_avg.append(np.mean(cd.user_confidence[i]))
-        # print(np.mean(cd.user_confidence[i]))
+        conf_mean = np.mean(cd.user_confidence[i])
+        confidence_avg.append(conf_mean)
+        print(f"User {user_num[i]} confidence: {round(conf_mean, 4)}")
 
     # Get most confident user
     current_user = np.argmax(confidence_avg)

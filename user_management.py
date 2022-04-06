@@ -162,14 +162,14 @@ def manage_users():
     Main menu for managing users
     """
     
-    dispatcher = {'1': add_user, '2': remove_user, '3': list_users, '4': print_keystroke_datastore}
+    dispatcher = {'1': add_user, '2': remove_user, '3': list_users, '4': print_keystroke_datastore, '5': classify.train_classifier}
     
     while True:
         clear_console()
-        print("Choose an option:\n1. Add a user\n2. Remove a user\n3. List users\n4. Output the keystroke datastore\n5. Return to main menu")
+        print("Choose an option:\n1. Add a user\n2. Remove a user\n3. List users\n4. Output the keystroke datastore\n5. Retrain classifier\n6. Return to main menu")
         response = input("Choice: ")
 
-        if response == '5':
+        if response == '6':
             break
         
         try:
