@@ -1,14 +1,23 @@
 import time
-from asyncio.windows_events import NULL
 
 import pandas as pd
 from pynput import keyboard
+import random
 
 start = 0
 end = 0
 keystroke_array = []
 count = 0
 prev_key = None
+
+typing_prompts = ["Six javelins thrown by the quick savages whizzed forty paces beyond the mark.",
+                "While making deep excavations we found some quaint bronze jewelry.",
+                "We quickly seized the black axle and just saved it from going past him.",
+                "Jaded zombies acted quietly but kept driving their oxen forward.",
+                "The wizard quickly jinxed the gnomes before they vaporized.",
+                "A quick movement of the enemy will jeopardize six gunboats.",
+                "The July sun caused a fragment of black pine wax to ooze on the velvet quilt.",
+                "A mad boxer shot a quick, gloved jab to the jaw of his dizzy opponent."]
 
 def on_press(key):
     """
@@ -49,7 +58,7 @@ def record_keystrokes():
     keystroke_array = []
     input("Please type the following passage of text and press 'Enter' once finished. Press 'Enter' to continue...")
 
-    print("one day, a zebra found a xylophone on the sidewalk. he quickly ran over, picked it up, and gave it to his pet mule. just then, he found another xylophone. he kept that one for himself")
+    print(typing_prompts[random.randrange(0, len(typing_prompts)-1)])
 
 
     # Collect events until released
