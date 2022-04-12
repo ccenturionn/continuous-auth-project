@@ -128,6 +128,10 @@ def remove_user(username="none_provided"):
         pickle.dump(user_num, file)
     file.close()
 
+    # Check if there is more that one user before training classifier
+    if len(user_num) > 1:
+        classify.train_classifier()
+
     input("Press enter to continue...")
 
 
