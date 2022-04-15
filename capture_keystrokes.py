@@ -4,10 +4,7 @@ import pandas as pd
 from pynput import keyboard
 import random
 
-start = 0
-end = 0
 keystroke_array = []
-count = 0
 prev_key = None
 
 typing_prompts = ["Six javelins thrown by the quick savages whizzed forty paces beyond the mark.",
@@ -24,10 +21,13 @@ def on_press(key):
     Called when a key is pressed. Get the time that the key is pressed and append to keystroke array.
     """
 
-    global start, keystroke_array, count, prev_key 
+    global keystroke_array, prev_key
+
+    # Get time that key is pressed
     start = time.perf_counter_ns()
     start /= 1000000
 
+    # Add keystroke data to keystroke_array
     try:
         keystroke_array.append([key.char, start, "Pressed", prev_key])
     except AttributeError:
@@ -38,10 +38,13 @@ def on_release(key):
     Called when a key is released. Get the time that the key is released and append to keystroke array.
     """
 
-    global end, start, keystroke_array, count, prev_key
+    global keystroke_array, prev_key
+
+    # Get time that key is released
     end = time.perf_counter_ns()
     end /= 1000000
 
+    # Add keystroke data to keystroke_array
     try:
         keystroke_array.append([key.char, end, "Released", prev_key])
     except AttributeError:
@@ -56,23 +59,22 @@ def record_keystrokes():
 
     global keystroke_array
     keystroke_array = []
-    input("Please type the following passage of text and press 'Enter' once finished. Press 'Enter' to continue...")
 
+    # Prompt user for input
+    input("Please type the following passage of text and press 'Enter' once finished. Press 'Enter' to continue...")
     print(typing_prompts[random.randrange(0, len(typing_prompts)-1)])
 
 
-    # Collect events until released
+    # Start keyboard listener
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.start()
 
     input()
 
+    # Convert keystroke_array to dataframe
     keystroke_array = pd.DataFrame(keystroke_array)
     keystroke_array.columns = ["Key", "Time", "Action", "PrevKey"]
 
     listener.stop()
     return keystroke_array
-
-
-
 
