@@ -36,7 +36,7 @@ keystroke_array = []
 count = 0
 prev_key = None
 toaster = ToastNotifier()
-num_keystrokes = 40
+num_keystrokes = 50
 
 class Confidence:
     def __init__(self, user_num):
