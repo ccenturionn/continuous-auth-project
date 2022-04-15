@@ -4,7 +4,7 @@ import pickle
 import pandas as pd
 from pynput import keyboard
 
-# Define list of keys that analysed
+# Define list of keys that are analysed
 key_set = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', keyboard.Key.enter, keyboard.Key.space, keyboard.Key.esc]
 
 # Define a list of all combinations of keys (including same-key combination)
@@ -148,7 +148,7 @@ def calc_features(keystroke_array):
 
     # Create dataframe using values list and column names list
     features = pd.DataFrame([values], columns=col_names)
-
+    
     return features
 
 def create_empty_df(keystroke_array):
