@@ -68,9 +68,7 @@ def update_confidence(pred_proba):
 
     # Append prediction probability for each user
     for i in range(pred_proba_len):
-        # print(i)
         cd.user_confidence[i].append(pred_proba[0][i])
-        # print(cd.user_confidence[i])
 
     user_management.clear_console()
     
@@ -170,6 +168,8 @@ def mon_keystrokes():
     """
     Begin monitoring keystrokes
     """
+
+    print("Keystroke monitoring activated...")
 
     confidence_data = Confidence(user_num)
 
