@@ -7,14 +7,14 @@ import random
 keystroke_array = []
 prev_key = None
 
-typing_prompts = ["Six javelins thrown by the quick savages whizzed forty paces beyond the mark.",
-                "While making deep excavations we found some quaint bronze jewelry.",
-                "We quickly seized the black axle and just saved it from going past him.",
-                "Jaded zombies acted quietly but kept driving their oxen forward.",
-                "The wizard quickly jinxed the gnomes before they vaporized.",
-                "A quick movement of the enemy will jeopardize six gunboats.",
-                "The July sun caused a fragment of black pine wax to ooze on the velvet quilt.",
-                "A mad boxer shot a quick, gloved jab to the jaw of his dizzy opponent."]
+typing_prompts = ["six javelins thrown by the quick savages whizzed forty paces beyond the mark.",
+                "while making deep excavations we found some quaint bronze jewelry.",
+                "we quickly seized the black axle and just saved it from going past him.",
+                "jaded zombies acted quietly but kept driving their oxen forward.",
+                "the wizard quickly jinxed the gnomes before they vaporized.",
+                "a quick movement of the enemy will jeopardize six gunboats.",
+                "the july sun caused a fragment of black pine wax to ooze on the velvet quilt.",
+                "a mad boxer shot a quick, gloved jab to the jaw of his dizzy opponent."]
 
 def on_press(key):
     """
